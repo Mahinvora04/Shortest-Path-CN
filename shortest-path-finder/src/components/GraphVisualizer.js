@@ -3,8 +3,29 @@ import ReactFlow, { Background, Controls } from "react-flow-renderer";
 import { dijkstra } from "../dijkstra"; // Assume dijkstra is implemented
 
 const GraphVisualizer = () => {
-  const [nodes, setNodes] = useState([]);
-  const [edges, setEdges] = useState([]);
+  // Default nodes and edges
+  const defaultNodes = [
+    { id: "A", data: { label: "A" }, position: { x: 100, y: 100 } },
+    { id: "B", data: { label: "B" }, position: { x: 300, y: 100 } },
+    { id: "C", data: { label: "C" }, position: { x: 200, y: 300 } },
+  ];
+
+  const defaultEdges = [
+    { id: "A-B", source: "A", target: "B", label: "5" },
+    { id: "B-C", source: "B", target: "C", label: "10" },
+    { id: "A-C", source: "A", target: "C", label: "8" },
+  ];
+
+  const defaultGraphData = {
+    A: { B: 5, C: 8 },
+    B: { A: 5, C: 10 },
+    C: { A: 8, B: 10 },
+  };
+
+  const [nodes, setNodes] = useState(defaultNodes);
+  const [edges, setEdges] = useState(defaultEdges);
+  const [graphData, setGraphData] = useState(defaultGraphData);
+
   const [startNode, setStartNode] = useState("");
   const [endNode, setEndNode] = useState("");
 
@@ -15,9 +36,6 @@ const GraphVisualizer = () => {
   const [edgeSource, setEdgeSource] = useState("");
   const [edgeTarget, setEdgeTarget] = useState("");
   const [edgeWeight, setEdgeWeight] = useState(1);
-
-  // Graph data structure for Dijkstra
-  const [graphData, setGraphData] = useState({});
 
   // Add a new node
   const addNode = () => {
@@ -72,6 +90,13 @@ const GraphVisualizer = () => {
     }));
 
     setEdges(newEdges);
+  };
+
+  // Clear all nodes and edges
+  const clearGraph = () => {
+    setNodes([]);
+    setEdges([]);
+    setGraphData({});
   };
 
   return (
@@ -131,6 +156,13 @@ const GraphVisualizer = () => {
         <label>End Node: </label>
         <input value={endNode} onChange={(e) => setEndNode(e.target.value)} />
         <button onClick={findShortestPath}>Find Path</button>
+      </div>
+
+      {/* Clear Graph */}
+      <div>
+        <button style={{ marginTop: "20px" }} onClick={clearGraph}>
+          Clear Graph
+        </button>
       </div>
 
       {/* Graph Visualization */}
